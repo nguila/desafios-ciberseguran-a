@@ -3,183 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CiberGlossário 2026 | Missão 31 Dias</title>
+    <title>CiberHub PRO | Oficial 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f1f5f9; }
-        .ciber-card { 
-            aspect-ratio: 1/1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            background: linear-gradient(145deg, #0f172a, #1e293b);
-        }
-        .ciber-card:hover:not(.locked) { 
-            transform: scale(1.05);
-            border-color: #3b82f6; 
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
-        }
-        .term-symbol { font-family: 'Fira Code', monospace; color: #60a5fa; }
-        .locked { opacity: 0.4; cursor: not-allowed; filter: grayscale(1); }
-        .completed { border-color: #22c55e !important; background: rgba(22, 101, 52, 0.2) !important; }
-        .option-btn { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
-        .option-btn:hover:not(:disabled) { background: #3b82f6; color: white; border-color: #3b82f6; }
-        .correct { background: #16a34a !important; border-color: #22c55e !important; }
-        .wrong { background: #dc2626 !important; border-color: #ef4444 !important; }
+        :root { --primary: #10b981; --bg-dark: #020617; --card-bg: #0f172a; --card-border: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #f8fafc; }
+        
+        .score-panel { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 850px; margin: 0 auto 40px auto; }
+        .stat-item { display: flex; align-items: center; gap: 12px; }
+        .stat-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .bg-trophy { background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .bg-flame { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        
+        .module-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .module-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 12px 30px rgba(16, 185, 129, 0.15); }
+        .completed-card { border: 2px solid var(--primary) !important; background: linear-gradient(145deg, #0f172a 0%, #064e3b 100%); }
+
+        .modal-header-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 24px; }
+        .library-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .library-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; transition: 0.2s; text-decoration: none; }
+        .library-item:hover { border-color: var(--primary); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+        .quiz-option { display: flex; align-items: center; width: 100%; padding: 14px; background: #1e293b; border: 1px solid var(--card-border); border-radius: 12px; margin-bottom: 8px; text-align: left; }
+        .quiz-letter { width: 34px; height: 34px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 14px; font-weight: 800; color: #94a3b8; font-size: 13px; }
+        .correct { background: #064e3b !important; border-color: #10b981 !important; }
+        .wrong { background: #7f1d1d !important; border-color: #ef4444 !important; }
+
+        .modal-blur { background: rgba(2, 6, 23, 0.98); backdrop-filter: blur(15px); }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-10">
 
-    <header class="max-w-6xl mx-auto text-center mb-12">
-        <h1 class="text-4xl font-black mb-2 tracking-tight text-white">🛡️ CIBER-DIÁRIO 2026</h1>
-        <p class="text-slate-400">Domine 31 conceitos essenciais para a sua sobrevivência digital.</p>
-        
-        <div class="mt-8 max-w-sm mx-auto bg-slate-800 rounded-full h-2 shadow-inner">
-            <div id="pBar" class="bg-blue-500 h-full w-0 transition-all duration-1000"></div>
-        </div>
-        <p id="pText" class="text-[10px] font-bold text-blue-400 mt-2 uppercase tracking-widest">0/31 Conceitos Sincronizados</p>
-    </header>
+    <div id="mainDashboard" class="max-w-7xl mx-auto">
+        <header class="mb-10 text-center">
+            <h1 class="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase mb-2">Desafio <span class="text-teal-500 italic">CIBERHUB</span></h1>
+            <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.4em] italic mb-10"> Algumas dicas, ferramentas e boas práticas para proteger a sua pegada digital</p>
+            
+            <div class="score-panel flex-wrap md:flex-nowrap">
+                <div class="stat-item">
+                    <div class="stat-icon bg-trophy">🏆</div>
+                    <div class="text-left">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Pontos</p>
+                        <p id="totalPoints" class="text-2xl font-black text-white">0</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">🛡️</div>
+                    <div class="text-left">
+                        <p id="userLevel" class="text-sm font-black text-emerald-400 italic uppercase">Aprendiz</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon bg-flame">🔥</div>
+                    <div class="text-left">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Quizzes</p>
+                        <p class="text-xl font-black text-white"><span id="doneQuizzes">0</span>/31</p>
+                    </div>
+                </div>
+                <button onclick="shareProgress()" class="bg-white text-emerald-600 px-6 py-2.5 rounded-xl font-black text-xs shadow-lg active:scale-95 transition">Partilhar</button>
+            </div>
+        </header>
 
-    <main class="max-w-7xl mx-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-4" id="grid"></main>
+        <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24"></div>
+    </div>
 
-    <div id="modal" class="fixed inset-0 bg-slate-950/95 z-50 hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <div class="flex justify-between items-start mb-6">
-                <div id="mIcon" class="text-4xl p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-blue-400 font-bold term-symbol">SIG</div>
-                <button onclick="closeModal()" class="text-slate-500 hover:text-white text-3xl transition">&times;</button>
+    <div id="modal" class="fixed inset-0 z-50 hidden modal-blur items-center justify-center overflow-y-auto p-4">
+        <div class="bg-[#0f172a] w-full max-w-2xl md:rounded-[40px] overflow-hidden flex flex-col shadow-2xl">
+            <div class="modal-header-gradient relative">
+                <button onclick="closeModal()" class="absolute top-6 right-6 text-white/40 hover:text-white">✕</button>
+                <div class="flex items-center gap-5">
+                    <div id="mIconBox" class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl shadow-xl"></div>
+                    <div>
+                        <p id="mDayTag" class="text-[10px] font-black text-white/70 uppercase tracking-widest mb-1"></p>
+                        <h2 id="mTitle" class="text-2xl font-black text-white leading-tight"></h2>
+                    </div>
+                </div>
             </div>
 
-            <div id="quizContainer">
-                <h2 id="mTitle" class="text-2xl font-bold mb-2"></h2>
-                <p id="mQuest" class="text-slate-300 mb-6"></p>
-                <div id="mOpts" class="grid gap-3"></div>
-            </div>
+            <div class="p-6 md:p-8 space-y-7 overflow-y-auto max-h-[75vh]">
+                <div id="mTipBox" class="p-4 bg-emerald-500/10 border-l-4 border-emerald-500 rounded-r-xl">
+                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">💡 Dica Rápida</p>
+                    <p id="mTip" class="text-sm font-semibold text-slate-100"></p>
+                </div>
 
-            <div id="resultContainer" class="hidden">
-                <div class="bg-blue-500/10 border border-blue-500/30 p-5 rounded-2xl mb-6">
-                    <h4 class="text-blue-400 font-bold mb-2">✅ Sabia que?</h4>
-                    <p id="mRec" class="text-sm text-slate-300 leading-relaxed"></p>
+                <div>
+                    <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4">📚 Biblioteca de Conhecimento</p>
+                    <div id="libraryContent" class="library-grid"></div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <a id="mLink" href="#" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-red-600/20 hover:bg-red-600/40 border border-red-600/50 rounded-xl text-red-400 font-bold transition">
-                        📺 Ver Vídeo Explicativo
-                    </a>
-                    <button onclick="finishDay()" class="p-4 bg-blue-600 hover:bg-blue-700 rounded-xl font-bold text-white transition">Concluir Missão</button>
+
+                <div class="space-y-2">
+                    <p class="text-[10px] font-black text-slate-500 uppercase">🛡️ Resumo Técnico</p>
+                    <p id="mArticle" class="text-sm text-slate-400 leading-relaxed"></p>
                 </div>
+
+                <div class="pt-6 border-t border-slate-800">
+                    <p class="text-[10px] font-black text-slate-500 uppercase mb-4">❓ Desafio do Dia</p>
+                    <p id="mQuest" class="text-base font-bold text-white mb-6"></p>
+                    <div id="mOpts" class="space-y-3"></div>
+                </div>
+
+                <button id="markBtn" onclick="saveProgress()" class="hidden w-full py-4 bg-emerald-600 rounded-xl font-black text-white uppercase shadow-lg">Validar Etapa ✅</button>
             </div>
         </div>
     </div>
 
     <script>
-        const terms = ["PWD", "PHS", "2FA", "WFI", "ENG", "RSM", "IOT", "COK", "DFK", "SSL", "USB", "UPD", "PRM", "SHL", "GPS", "BRW", "VPN", "CHG", "SRT", "PIN", "INC", "SMS", "CLU", "DWB", "TYP", "CLD", "RFID", "WPA", "DNS", "AIG", "HUM"];
-
-        const data = [
-            { t: "Password (Palavra-Passe)", q: "O que torna uma senha realmente forte?", o: ["Ser o nome do pet","Ter mais de 12 caracteres e ser uma frase","Mudar o 'A' por '4'"], a: 1, r: "Frases longas são mais difíceis de quebrar por força bruta do que palavras curtas complexas.", v: "https://www.youtube.com/watch?v=5Vj6XvS_mD0" },
-            { t: "Phishing (Pescagem)", q: "Recebe um e-mail urgente de um banco onde não tem conta. O que faz?", o: ["Clico para avisar o erro","Apago imediatamente","Respondo ao e-mail"], a: 1, r: "Criminosos enviam e-mails em massa esperando que alguém 'morda o isco'.", v: "https://www.youtube.com/watch?v=N_8qT060uO4" },
-            { t: "2FA (Autenticação)", q: "Por que deve ativar o 2FA em todas as contas?", o: ["Para ter duas senhas","Para impedir acessos mesmo que saibam a sua senha","Para o site ser mais rápido"], a: 1, r: "O 2FA exige um código que só você tem no seu telemóvel físico.", v: "https://www.youtube.com/watch?v=hGvYIAtvDkc" },
-            { t: "Wi-Fi (Redes)", q: "Qual o risco de usar Wi-Fi grátis sem proteção?", o: ["Gastar bateria","Alguém 'escutar' os seus dados","Nenhum risco"], a: 1, r: "Redes abertas permitem que atacantes intercetem o que você envia e recebe.", v: "https://www.youtube.com/watch?v=mH5yE0_G9p4" },
-            { t: "Engenharia Social", q: "O que é engenharia social na cibersegurança?", o: ["Construir sites","Manipular pessoas para obter dados","Configurar routers"], a: 1, r: "É a arte de enganar pessoas para que elas mesmas entreguem as suas chaves ou segredos.", v: "https://www.youtube.com/watch?v=Lc69XasG74M" },
-            { t: "Ransomware", q: "O que faz este vírus malicioso?", o: ["Apaga o histórico","Sequestra ficheiros e pede resgate","Aumenta o volume do PC"], a: 1, r: "O ransomware encripta os seus dados e exige dinheiro (normalmente em Bitcoin) para os devolver.", v: "https://www.youtube.com/watch?v=pAnuYc6i-28" },
-            { t: "IoT (Smart Home)", q: "Qual o cuidado ao comprar uma lâmpada ou câmara Wi-Fi?", o: ["Ver a cor","Mudar a senha padrão de fábrica","Não precisa de cuidados"], a: 1, r: "Dispositivos inteligentes mal configurados são portas de entrada para a sua rede doméstica.", v: "https://www.youtube.com/watch?v=Is_yq3m8S08" },
-            { t: "Cookies", q: "Para que servem os cookies na navegação?", o: ["Acelerar o PC","Guardar preferências e rastrear hábitos","Proteger contra vírus"], a: 1, r: "Cookies podem ser úteis para lembrar o login, mas também rastreiam a sua vida digital.", v: "https://www.youtube.com/watch?v=fXvI9k09j8Y" },
-            { t: "Deepfake", q: "Como identificar um vídeo ou áudio falso por IA?", o: ["Pela duração","Movimentos estranhos ou pedidos de dinheiro urgentes","Não dá para identificar"], a: 1, r: "Desconfie de pedidos invulgares de familiares. IA já clona voz e rosto com precisão.", v: "https://www.youtube.com/watch?v=oxXpB9pSETo" },
-            { t: "SSL/HTTPS", q: "O cadeado no navegador significa que o site é legítimo?", o: ["Sim, sempre","Não, apenas que a comunicação é segura","Significa que é um banco"], a: 1, r: "Qualquer site pode ter cadeado hoje em dia, inclusive sites de burlas.", v: "https://www.youtube.com/watch?v=hExRDVZhigo" },
-            { t: "USB Malware", q: "Encontrou um USB no escritório. Pode ligá-lo?", o: ["Sim, para ver o dono","Não, pode conter vírus 'auto-executáveis'","Sim, se for de marca boa"], a: 1, r: "USB achados são um dos métodos mais antigos e eficazes para infetar empresas.", v: "https://www.youtube.com/watch?v=Lsh3_j-XW7A" },
-            { t: "Update (Atualização)", q: "Por que os sistemas pedem atualizações constantes?", o: ["Para ocupar espaço","Para corrigir falhas de segurança críticas","Para mudar ícones"], a: 1, r: "Hackers exploram falhas conhecidas. Atualizar é fechar a janela que ficou aberta.", v: "https://www.youtube.com/watch?v=vVPCitG69gM" },
-            { t: "Permissions", q: "Uma app de calculadora pede acesso ao seu microfone. Aceita?", o: ["Sim, pode precisar","Não, é uma permissão abusiva","Só aos fins de semana"], a: 1, r: "Se a função não justifica o acesso, a app está provavelmente a espiar dados.", v: "https://www.youtube.com/watch?v=S0G6mNInp_k" },
-            { t: "Shoulder Surfing", q: "Como se proteger de 'espreitadores' de ecrã?", o: ["Usar óculos escuros","Usar filtros de privacidade ou estar atento ao redor","Não usar o telemóvel"], a: 1, r: "Estar atento a quem está atrás de si no multibanco ou autocarro evita roubo de PINs.", v: "https://www.youtube.com/watch?v=6P6z707Y8_g" },
-            { t: "GPS/Geotagging", q: "Qual o perigo de postar fotos com localização em tempo real?", o: ["Gasta dados","Informa criminosos onde você está (ou onde NÃO está)","Nenhum perigo"], a: 1, r: "Postar 'estou de férias' avisa que a sua casa está vazia.", v: "https://www.youtube.com/watch?v=uKAs_fVvEAs" },
-            { t: "Browser Privacy", q: "Qual destes navegadores foca mais em não o rastrear?", o: ["Chrome","Firefox / Brave / DuckDuckGo","Internet Explorer"], a: 1, r: "Navegadores de privacidade bloqueiam anúncios e scripts de rastreio nativamente.", v: "https://www.youtube.com/watch?v=Oid_I_78_os" },
-            { t: "VPN (Virtual Private Network)", q: "Quando deve usar uma VPN?", o: ["Para baixar jogos grátis","Para cifrar a sua ligação em redes Wi-Fi desconhecidas","Para o PC não aquecer"], a: 1, r: "A VPN esconde o seu endereço IP real e protege os dados que envia.", v: "https://www.youtube.com/watch?v=9S_X3F6R9iY" },
-            { t: "Juice Jacking", q: "Pode usar cabos USB de estações de carga públicas?", o: ["Sim","Não, podem roubar dados pelo cabo","Apenas se estiver com pressa"], a: 1, r: "Use sempre a sua própria tomada de parede. Cabos USB transmitem dados e energia.", v: "https://www.youtube.com/watch?v=7uS6T8UvV60" },
-            { t: "Sharenting", q: "O que é 'Sharenting'?", o: ["Partilhar Wi-Fi","Exposição excessiva de crianças pelos pais online","Trocar senhas com amigos"], a: 1, r: "Expor a vida de menores cria uma pegada digital que eles não escolheram e pode ser perigoso.", v: "https://www.youtube.com/watch?v=YpL9R9p_yQk" },
-            { t: "PIN Security", q: "Qual PIN é mais seguro para o telemóvel?", o: ["1234","Um código aleatório de 6 dígitos","A sua data de nascimento"], a: 1, r: "Evite sequências lógicas ou datas que um burlão possa descobrir facilmente.", v: "https://www.youtube.com/watch?v=0P_fFf8V_5E" },
-            { t: "Incognito Mode", q: "O modo incógnito esconde a sua navegação do seu patrão ou operador?", o: ["Sim","Não, apenas não guarda histórico no seu PC","Fico invisível"], a: 1, r: "Apenas limpa o rasto local. Na rede, você continua identificável.", v: "https://www.youtube.com/watch?v=Y7Z66fT37mU" },
-            { t: "Smishing (SMS)", q: "O que caracteriza um ataque de Smishing?", o: ["Vírus por e-mail","Burla através de mensagens SMS falsas","Chamadas de voz"], a: 1, r: "Mensagens com links de 'entrega pendente' ou 'conta suspensa' são os exemplos mais comuns.", v: "https://www.youtube.com/watch?v=YpL9R9p_yQk" },
-            { t: "Cloud Hygiene", q: "Como manter a sua 'nuvem' (iCloud/Drive) segura?", o: ["Não guardar fotos","Senhas fortes e verificação 2FA","Não apagar nada"], a: 1, r: "A sua conta na nuvem é o alvo nº 1 de hackers hoje em dia.", v: "https://www.youtube.com/watch?v=uKAs_fVvEAs" },
-            { t: "Dark Web", q: "A Dark Web é ilegal por si só?", o: ["Sim, totalmente","Não, é apenas uma parte da rede anónima","É um site de hackers"], a: 1, r: "É usada para atividades ilegais, mas também por jornalistas e ativistas em países sob censura.", v: "https://www.youtube.com/watch?v=3u_9pX6z9_c" },
-            { t: "Typosquatting", q: "O que é 'Typosquatting'?", o: ["Hackear teclados","Registrar sites com erros de escrita (ex: facebok.com)","Escrever depressa"], a: 1, r: "Cuidado ao digitar endereços. Um erro pode levá-lo a uma cópia falsa do site real.", v: "https://www.youtube.com/watch?v=hExRDVZhigo" },
-            { t: "Cloud Storage", q: "Dados na nuvem estão imunes a vírus?", o: ["Sim","Não, podem ser infetados e sincronizados para o seu PC","A nuvem mata vírus"], a: 1, r: "Se um ficheiro no seu PC for infetado, ele será enviado para a nuvem e vice-versa.", v: "https://www.youtube.com/watch?v=vVPCitG69gM" },
-            { t: "RFID Blocking", q: "Para que servem carteiras com proteção RFID?", o: ["Durar mais tempo","Impedir leitura não autorizada de cartões contactless","Guardar mais dinheiro"], a: 1, r: "Bloqueiam ondas de rádio para que ninguém consiga ler o seu cartão no bolso.", v: "https://www.youtube.com/watch?v=6P6z707Y8_g" },
-            { t: "WPA3", q: "O que é o WPA3?", o: ["Um tipo de computador","O protocolo de segurança Wi-Fi mais moderno","Uma marca de router"], a: 1, r: "Oferece uma proteção muito superior contra ataques que tentam adivinhar a senha do seu Wi-Fi.", v: "https://www.youtube.com/watch?v=p6p8pTAsy1c" },
-            { t: "DNS Protection", q: "Mudar o DNS para um serviço seguro ajuda em quê?", o: ["Internet grátis","Privacidade e bloqueio de sites maliciosos","Ter mais canais"], a: 1, r: "DNS seguros filtram sites de burlas antes mesmo de eles carregarem no seu ecrã.", v: "https://www.youtube.com/watch?v=XhNl5A5Lp4M" },
-            { t: "AI Phishing", q: "Como a IA mudou os golpes de phishing?", o: ["Acabaram-se os golpes","Tornou-os perfeitos, sem erros de escrita e muito convincentes","Tornou-os mais lentos"], a: 1, r: "Já não se vêem tantos erros de português; os textos agora parecem 100% oficiais.", v: "https://www.youtube.com/watch?v=oxXpB9pSETo" },
-            { t: "Human Element", q: "Qual a peça mais importante da cibersegurança?", o: ["O Antivírus","Você (O Usuário)","A Firewall"], a: 1, r: "Nenhuma tecnologia protege alguém que entrega a senha por vontade própria. Educação é tudo!", v: "https://www.youtube.com/watch?v=Lc69XasG74M" }
+        const titles = [
+            "Compras Online Seguras", "Cópia na Nuvem (\"Cloud\")", "Gestão de Senhas", "Engenharia Social", 
+            "Wi-Fi Público", "Cyberbullying", "Redes Sociais", "Deepfakes IA", "Ransomware", 
+            "Autenticação MFA", "Smart Devices", "Privacidade Cookies", "Modo Incógnito", 
+            "Metadados EXIF", "VPN Segura", "Juice Jacking", "Sharenting", "Segurança PIN", 
+            "Pegada Digital", "Supply Chain", "Typosquatting", "Backup Offline", "RFID Spoofing", 
+            "DNS Over HTTPS", "Engenharia Social", "Patch Management", "App Permissions", 
+            "Shoulder Surfing", "Dark Web Monitoring", "Secure API", "Zero Trust"
         ];
 
-        let activeIdx = null;
+        const icons = ["🛒", "☁️", "🔑", "🎣", "📶", "🤝", "📸", "🎭", "🛡️", "🔐", "🏠", "🍪", "👤", "📍", "🌐", "⚡", "👨‍👩‍👧", "🔢", "👣", "⛓️", "🔍", "💾", "📡", "🌍", "🤝", "🆙", "📱", "👤", "🌑", "🔌", "🔒"];
 
-        function build() {
+        // Links de artigos atualizados por tema
+        const articleLinks = [
+            "https://www.internetsegura.pt/compras-online", "https://www.cncs.gov.pt/recursos/boas-praticas/backup/", 
+            "https://www.cncs.gov.pt/recursos/boas-praticas/passwords/", "https://www.cncs.gov.pt/recursos/boas-praticas/phishing/",
+            "https://www.internetsegura.pt/wi-fi-publico", "https://www.internetsegura.pt/cyberbullying",
+            "https://www.cncs.gov.pt/recursos/boas-praticas/redes-sociais/", "https://www.enisa.europa.eu/topics/anti-phishing/deepfakes",
+            "https://www.cncs.gov.pt/recursos/boas-praticas/ransomware/", "https://www.cncs.gov.pt/recursos/boas-praticas/autenticacao-multifator/"
+            // Lógica de fallback para os restantes
+        ];
+
+        const db = titles.map((name, i) => ({
+            t: name, i: icons[i],
+            q: `Qual a melhor prática de ciber-higiene para ${name}?`,
+            o: ["Ignorar alertas", "Seguir normas do CNCS", "Partilhar acessos", "Desativar firewall"], a: 1,
+            tip: "A segurança digital exige vigilância constante.",
+            article: `Módulo sobre ${name} alinhado com o Centro Nacional de Cibersegurança.`,
+            lib: [
+                {n:"Artigo Atualizado", t:"📄 Artigo", l: articleLinks[i] || "https://www.cncs.gov.pt/recursos/artigos/"},
+                {n:"Vídeo Educativo", t:"📺 YouTube", l:"https://www.youtube.com/@InternetSeguraPT"},
+                {n:"Guia Oficial", t:"🛡️ CNCS", l:"https://www.cncs.gov.pt"},
+                {n:"Avisos Ativos", t:"⚠️ Alertas", l:"https://www.cncs.gov.pt/alertas/"}
+            ]
+        }));
+
+        let currentIdx = null;
+
+        function init() {
             const grid = document.getElementById('grid');
-            const today = 31; // Mudar para new Date().getDate() para bloquear dias futuros
-
-            terms.forEach((term, i) => {
+            let done = 0;
+            db.forEach((item, i) => {
                 const day = i + 1;
-                const isLocked = day > today;
-                const isDone = localStorage.getItem('c-day-' + day);
-                
+                const isDone = localStorage.getItem('vMasterArtigo-done-' + day);
+                if(isDone) done++;
                 const card = document.createElement('div');
-                card.className = `ciber-card rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer ${isLocked ? 'locked' : ''} ${isDone ? 'completed' : ''}`;
-                card.innerHTML = `
-                    <div class="text-[9px] font-bold text-slate-500 mb-1">MISSION ${day.toString().padStart(2, '0')}</div>
-                    <div class="term-symbol text-xl font-bold">${term}</div>
-                    <div class="mt-2">${isDone ? '✅' : (isLocked ? '🔒' : '📶')}</div>
-                `;
-                if(!isLocked) card.onclick = () => openModal(i);
+                card.className = `module-card p-6 flex flex-col ${isDone ? 'completed-card' : ''}`;
+                card.onclick = () => openModal(i);
+                card.innerHTML = `<div class="text-4xl mb-4">${item.i}</div><p class="text-[9px] font-black text-emerald-500 uppercase italic mb-1">Dia ${day.toString().padStart(2, '0')}</p><h3 class="text-white font-bold mb-6 text-sm uppercase">${item.t}</h3><button class="mt-auto py-3 bg-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Jogar</button>`;
                 grid.appendChild(card);
             });
-            updateProg();
+            document.getElementById('totalPoints').innerText = done * 150;
+            document.getElementById('doneQuizzes').innerText = done;
+            const levels = ["Aprendiz", "Guarda Digital", "Mestre Ciber", "Elite de Defesa"];
+            document.getElementById('userLevel').innerText = levels[Math.floor(done/8)] || levels[3];
         }
 
         function openModal(i) {
-            activeIdx = i;
-            const item = data[i];
-            document.getElementById('mIcon').innerText = terms[i];
+            const item = db[i]; currentIdx = i;
+            document.getElementById('mIconBox').innerText = item.i;
+            document.getElementById('mDayTag').innerText = `Dia ${(i+1).toString().padStart(2, '0')} • Conhecimento`;
             document.getElementById('mTitle').innerText = item.t;
+            document.getElementById('mTip').innerText = item.tip;
+            document.getElementById('mArticle').innerText = item.article;
             document.getElementById('mQuest').innerText = item.q;
-            document.getElementById('mRec').innerText = item.r;
-            document.getElementById('mLink').href = item.v;
-
-            const opts = document.getElementById('mOpts');
-            opts.innerHTML = '';
+            document.getElementById('libraryContent').innerHTML = item.lib.map(l => `
+                <a href="${l.l}" target="_blank" class="library-item">
+                    <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">${l.t}</p>
+                    <p class="text-[11px] text-white font-extrabold leading-tight">${l.n}</p>
+                </a>
+            `).join('');
+            const opts = document.getElementById('mOpts'); opts.innerHTML = '';
             item.o.forEach((o, idx) => {
-                const b = document.createElement('button');
-                b.className = "option-btn p-4 rounded-xl text-left font-semibold text-slate-300 transition";
-                b.innerText = o;
-                b.onclick = () => {
-                    if(idx === item.a) {
-                        b.classList.add('correct');
-                        document.getElementById('quizContainer').classList.add('hidden');
-                        document.getElementById('resultContainer').classList.remove('hidden');
-                    } else {
-                        b.classList.add('wrong');
-                        setTimeout(() => b.classList.remove('wrong'), 500);
-                    }
-                };
+                const b = document.createElement('button'); b.className = 'quiz-option';
+                b.innerHTML = `<div class="quiz-letter">${String.fromCharCode(65 + idx)}</div> <div class="text-[13px] font-bold text-slate-200">${o}</div>`;
+                b.onclick = () => { if(idx === item.a) { b.classList.add('correct'); document.getElementById('markBtn').classList.remove('hidden'); } else { b.classList.add('wrong'); } };
                 opts.appendChild(b);
             });
-
-            document.getElementById('quizContainer').classList.remove('hidden');
-            document.getElementById('resultContainer').classList.add('hidden');
-            document.getElementById('modal').classList.add('flex');
             document.getElementById('modal').classList.remove('hidden');
         }
 
-        function closeModal() { document.getElementById('modal').classList.add('hidden'); document.getElementById('modal').classList.remove('flex'); }
-
-        function finishDay() {
-            localStorage.setItem('c-day-' + (activeIdx+1), 'true');
-            location.reload();
+        function shareProgress() {
+            const text = `Ganhei ${document.getElementById('totalPoints').innerText} pontos na Academia CiberHub! 🛡️🚀`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + window.location.href)}`, '_blank');
         }
 
-        function updateProg() {
-            let count = 0;
-            for(let i=1; i<=31; i++) if(localStorage.getItem('c-day-'+i)) count++;
-            document.getElementById('pBar').style.width = (count/31*100) + '%';
-            document.getElementById('pText').innerText = `${count}/31 Conceitos Sincronizados`;
-        }
-
-        build();
+        function saveProgress() { localStorage.setItem('vMasterArtigo-done-' + (currentIdx + 1), 'true'); location.reload(); }
+        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+        window.onload = init;
     </script>
 </body>
 </html>
